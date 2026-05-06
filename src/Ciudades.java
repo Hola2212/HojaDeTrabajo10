@@ -15,16 +15,15 @@ public class Ciudades implements Comparable<Ciudades> {
     }
     public Aristas getConection(Ciudades destination) {
         for (Aristas conection : conections){
-            if (compareTo(destination) == 1){
+            if (compareTo(destination) == 0){
                 return conection;
             }
         }
         return null;
     }
-    public void addConection(Ciudades destination, int distance) {
+    public void addConection(Ciudades destination, Float distance) {
         this.conections.add(new Aristas(destination, distance));
     }
-
     @Override
     public int compareTo(Ciudades other) {
         return this.name.compareToIgnoreCase(other.getName());
