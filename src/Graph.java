@@ -4,7 +4,9 @@ public class Graph {
 
     private Map<String, Integer> indexMap;
     private List<String> cities;
-    private float[][] dist;
+
+    private float[][] graph; // grafo original
+    private float[][] dist;  // resultado de Floyd
     private int[][] next;
 
     public Graph(Vector<Token> tokens) {
@@ -17,22 +19,22 @@ public class Graph {
         }
 
         int n = cities.size();
+
+        graph = new float[n][n];
         dist = new float[n][n];
         next = new int[n][n];
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (i == j) dist[i][j] = 0;
-                else dist[i][j] = Float.POSITIVE_INFINITY;
-                next[i][j] = -1;
+                if (i == j) graph[i][j] = 0;
+                else graph[i][j] = Float.POSITIVE_INFINITY;
             }
         }
 
         for (Token t : tokens) {
             int i = indexMap.get(t.getOrigin());
             int j = indexMap.get(t.getDestination());
-            dist[i][j] = t.getDistance();
-            next[i][j] = j;
+            graph[i][j] = t.getDistance();
         }
     }
 
@@ -44,11 +46,28 @@ public class Graph {
     }
 
     public void floyd() {
-        int n = dist.length;
+        int n = graph.length;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                dist[i][j] = graph[i][j];
+
+                if (i != j && graph[i][j] != Float.POSITIVE_INFINITY) {
+                    next[i][j] = j;
+                } else {
+                    next[i][j] = -1;
+                }
+            }
+        }
 
         for (int k = 0; k < n; k++) {
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
+
+                    if (dist[i][k] == Float.POSITIVE_INFINITY ||
+                            dist[k][j] == Float.POSITIVE_INFINITY)
+                        continue;
+
                     if (dist[i][k] + dist[k][j] < dist[i][j]) {
                         dist[i][j] = dist[i][k] + dist[k][j];
                         next[i][j] = next[i][k];
@@ -69,7 +88,7 @@ public class Graph {
 
         path.add(from);
 
-        while (i != j) {
+        while (!i.equals(j)) {
             i = next[i][j];
             path.add(cities.get(i));
         }
@@ -78,7 +97,12 @@ public class Graph {
     }
 
     public float getDistance(String from, String to) {
-        return dist[indexMap.get(from)][indexMap.get(to)];
+        Integer i = indexMap.get(from);
+        Integer j = indexMap.get(to);
+
+        if (i == null || j == null) return Float.POSITIVE_INFINITY;
+
+        return dist[i][j];
     }
 
     public String getCenter() {
@@ -104,16 +128,26 @@ public class Graph {
     }
 
     public void removeEdge(String from, String to) {
-        int i = indexMap.get(from);
-        int j = indexMap.get(to);
-        dist[i][j] = Float.POSITIVE_INFINITY;
-        next[i][j] = -1;
+        Integer i = indexMap.get(from);
+        Integer j = indexMap.get(to);
+
+        if (i == null || j == null) {
+            System.out.println("Ciudad no encontrada");
+            return;
+        }
+
+        graph[i][j] = Float.POSITIVE_INFINITY;
     }
 
     public void addEdge(String from, String to, float distance) {
-        int i = indexMap.get(from);
-        int j = indexMap.get(to);
-        dist[i][j] = distance;
-        next[i][j] = j;
+        Integer i = indexMap.get(from);
+        Integer j = indexMap.get(to);
+
+        if (i == null || j == null) {
+            System.out.println("Ciudad no encontrada");
+            return;
+        }
+
+        graph[i][j] = distance;
     }
 }

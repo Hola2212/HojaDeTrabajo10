@@ -2,12 +2,13 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        Vector<Token> tokens = new FileReaderUtil().ReadFile("src/resources/guategrafo.txt");
+        Vector<Token> tokens = new FileReaderUtil()
+                .ReadFile("src/resources/guategrafo.txt");
         Graph g = new Graph(tokens);
         g.floyd();
         Scanner sc = new Scanner(System.in);
         while (true) {
-            System.out.println("1. Ruta más corta");
+            System.out.println("\n1. Ruta más corta");
             System.out.println("2. Centro del grafo");
             System.out.println("3. Modificar grafo");
             System.out.println("4. Salir");
@@ -28,13 +29,19 @@ public class Main {
                 System.out.println("2. Agregar conexión");
                 int sub = sc.nextInt();
                 if (sub == 1) {
+                    System.out.print("Origen: ");
                     String a = sc.next();
+                    System.out.print("Destino: ");
                     String b = sc.next();
                     g.removeEdge(a, b);
                 } else {
+                    System.out.print("Origen: ");
                     String a = sc.next();
+                    System.out.print("Destino: ");
                     String b = sc.next();
+                    System.out.print("Distancia: ");
                     float d = sc.nextFloat();
+
                     g.addEdge(a, b, d);
                 }
                 g.floyd();
