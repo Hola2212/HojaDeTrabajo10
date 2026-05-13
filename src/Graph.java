@@ -84,6 +84,11 @@ public class Graph {
         Integer j = indexMap.get(to);
 
         if (i == null || j == null) return path;
+
+        if (i.equals(j)) {
+            return Collections.singletonList(from);
+        }
+
         if (next[i][j] == -1) return path;
 
         path.add(from);
