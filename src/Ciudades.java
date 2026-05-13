@@ -13,13 +13,13 @@ public class Ciudades implements Comparable<Ciudades> {
     public void setName(String name) { //Innecesario ya que no se modificarán los nombres de las Ciudades
         this.name = name;
     }
-    public Aristas getConection(Ciudades destination) {
+    public Float getConection(Ciudades destination) {
         for (Aristas conection : conections){
             if (compareTo(destination) == 0){
-                return conection;
+                return conection.getDistance();
             }
         }
-        return null;
+        return Float.POSITIVE_INFINITY;
     }
     public void addConection(Ciudades destination, Float distance) {
         this.conections.add(new Aristas(destination, distance));
